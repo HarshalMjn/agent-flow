@@ -1,0 +1,107 @@
+# Python compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment variables and settings files
+.env
+*.sqlite3
+instance/
+
+# Python virtual environments
+venv/
+env/
+ENV/
+.venv/
+.ENV/
+
+# Logs and databases
+*.log
+*.pot
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+
+# FastAPI specific
+static/
+uploads/
+
+# Node (Frontend)
+node_modules/
+dist/
+dist-ssr/
+*.local
+.eslintcache
+.stylelintcache
+.vite
+.next
+.contentlayer
+
+# Git specific
+.git/
+
+# IDE specific files
+.idea/
+*.iml
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Jupyter Notebooks
+.ipynb_checkpoints
+
+# Coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+
+# pyenv
+.python-version
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# pytest
+.pytest_cache/
+
+# Ruff
+.ruff_cache/
+
+# Pylint
+.pylint.d/
+
+# Bandit security linter
+.bandit/
+
+# Sphinx documentation
+docs/_build/
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.s
+.DS_Store
+
+# Kamal (if applicable)
+.kamal/
+config/deploy.yml
+config/deploy.*.yml
+
+# UV
+uv.lock

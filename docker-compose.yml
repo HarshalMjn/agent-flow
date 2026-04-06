@@ -1,0 +1,101 @@
+services:
+  fastapi_app:
+    build: .
+    command:
+      - fastapi
+      - run
+      - --reload
+      - "app/main.py"
+    env_file:
+      - .env
+    volumes:
+      - ./app:/code/app
+      - ./scripts:/code/scripts
+      - ./alembic:/code/alembic
+    ports:
+      - "8000:8000"
+    networks:
+      - agent-net
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      temporal:
+        condition: service_started
+
+  temporal_worker:
+    build: .
+    command: python -m app.temporal.worker
+    env_file:
+      - .env
+    depends_on:
+      fastapi_app:
+        condition: service_started
+    volumes:
+      - ./app:/code/app
+      - ./.env:/code/.env
+    networks:
+      - agent-net
+
+  # Temporal Server
+  temporal:
+    image: temporalio/auto-setup:1.23.0
+    ports:
+      - "7233:7233"
+      - "8233:8233"
+    environment:
+      - DB=mysql
+      - MYSQL_SEEDS=mysql
+      - MYSQL_PWD=${DB_PASSWORD:-secret}
+      - MYSQL_USER=root
+    networks:
+      - agent-net
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  redis:
+    image: redis:latest
+    command: --port ${REDIS_PORT:-6379}
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    networks:
+      - agent-net
+
+  mysql:
+    image: 'mysql:8.4'
+    platform: linux/x86_64
+    environment:
+      MYSQL_ROOT_PASSWORD: '${DB_PASSWORD:-secret}'
+      MYSQL_DATABASE: '${DB_DATABASE:-agent_flow}'
+      MYSQL_USER: '${DB_USERNAME:-agent_flow}'
+      MYSQL_PASSWORD: '${DB_PASSWORD:-secret}'
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+    ports:
+      - "${DB_PORT:-3306}:3306"
+    networks:
+      - agent-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-p${DB_PASSWORD:-secret}"]
+      retries: 5
+      timeout: 5s
+      interval: 10s
+    volumes:
+      - agent-flow-mysql:/var/lib/mysql
+
+  mailpit:
+    image: 'axllent/mailpit:latest'
+    ports:
+      - '${FORWARD_MAILPIT_PORT:-1025}:1025'
+      - '${FORWARD_MAILPIT_DASHBOARD_PORT:-8025}:8025'
+    networks:
+      - agent-net
+
+networks:
+  agent-net:
+    driver: bridge
+
+volumes:
+  agent-flow-mysql:
+    driver: local
