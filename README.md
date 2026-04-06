@@ -2,18 +2,6 @@
 
 Production-ready AI workflow builder with FastAPI, Temporal, and React Flow.
 
-## Architecture
-
-```mermaid
-graph TD
-    A[Frontend: React + React Flow] -->|REST / SSE| B[Backend: FastAPI]
-    B -->|Database| C[MySQL]
-    B -->|Task Orchestration| D[Temporal Server]
-    D -->|Job Execution| E[Temporal Worker]
-    E -->|AI Interactions| F[LiteLLM]
-    F -->|API| G[OpenAI / Anthropic]
-```
-
 ## Tech Stack
 - **Backend**: FastAPI, Temporal, MySQL, Redis, LiteLLM
 - **Frontend**: React, TypeScript, React Flow, Tailwind CSS
