@@ -55,14 +55,6 @@ services:
       mysql:
         condition: service_healthy
 
-  redis:
-    image: redis:latest
-    command: --port ${REDIS_PORT:-6379}
-    ports:
-      - "${REDIS_PORT:-6379}:6379"
-    networks:
-      - agent-net
-
   mysql:
     image: 'mysql:8.4'
     platform: linux/x86_64
@@ -84,13 +76,6 @@ services:
     volumes:
       - agent-flow-mysql:/var/lib/mysql
 
-  mailpit:
-    image: 'axllent/mailpit:latest'
-    ports:
-      - '${FORWARD_MAILPIT_PORT:-1025}:1025'
-      - '${FORWARD_MAILPIT_DASHBOARD_PORT:-8025}:8025'
-    networks:
-      - agent-net
 
 networks:
   agent-net:
